@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zariahomecare Mobile</title>
+    
+    <!-- Link Logo Ikon untuk iPhone & Browser -->
+    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="icon" type="image/png" href="logo.png">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0fdfa;
+        }
+        .mobile-container {
+            max-width: 430px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background-color: #ffffff;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+            position: relative;
+            padding-bottom: 80px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-container">
+        
+        <!-- Header / Status Bar - Tema Medis Teal -->
+        <div class="p-4 bg-white sticky top-0 z-10 border-b border-teal-100">
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center space-x-3">
+                    <img src="logo.png" alt="Logo" class="w-10 h-10 rounded-full object-cover border border-teal-200 shadow-sm" onerror="this.onerror=null; this.src='https://via.placeholder.com/40?text=ZH';">
+                    <div>
+                        <h1 class="text-sm font-semibold text-gray-800">Zariahomecare</h1>
+                        <p class="text-xs text-gray-500 flex items-center gap-1">
+                            <i class="fa-solid fa-location-dot text-teal-600"></i> Batam, Kepulauan Riau
+                        </p>
+                    </div>
+                </div>
+                <button class="p-2 text-gray-600 hover:bg-teal-50 rounded-full">
+                    <i class="fa-regular fa-bell"></i>
+                </button>
+            </div>
+
+            <!-- Status Banner Medis Disesuaikan -->
+            <div class="bg-teal-50/70 border border-teal-100 rounded-xl p-2.5 flex justify-between items-center text-xs">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-user-doctor text-teal-600 text-sm"></i>
+                    <span class="font-medium text-teal-900 leading-tight">
+                        Selamat datang, <strong>Dang Ampuan Niram Nazariah</strong>
+                    </span>
+                </div>
+                <span class="bg-teal-600 text-white font-bold px-2 py-1 rounded-md text-[10px] whitespace-nowrap">
+                    Selamat bekerja
+                </span>
+            </div>
+        </div>
+
+        <!-- Section 1: Quick Navigation Menu -->
+        <div class="p-4 grid grid-cols-4 gap-2 text-center">
+            <a href="#form-pasien" class="flex flex-col items-center group">
+                <div class="w-10 h-10 rounded-full bg-teal-100/80 text-teal-700 flex items-center justify-center text-base mb-1 group-active:scale-95 transition">
+                    <i class="fa-solid fa-user-plus"></i>
+                </div>
+                <span class="text-[10px] text-gray-700 font-medium">Input</span>
+            </a>
+            <a href="#riwayat-pasien" class="flex flex-col items-center group">
+                <div class="w-10 h-10 rounded-full bg-teal-100/80 text-teal-700 flex items-center justify-center text-base mb-1 group-active:scale-95 transition">
+                    <i class="fa-solid fa-address-book"></i>
+                </div>
+                <span class="text-[10px] text-gray-700 font-medium">Pasien</span>
+            </a>
+            <a href="#backup-restore" class="flex flex-col items-center group">
+                <div class="w-10 h-10 rounded-full bg-teal-100/80 text-teal-700 flex items-center justify-center text-base mb-1 group-active:scale-95 transition">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                </div>
+                <span class="text-[10px] text-gray-700 font-medium">Backup</span>
+            </a>
+            <a href="#grafik-section" class="flex flex-col items-center group">
+                <div class="w-10 h-10 rounded-full bg-teal-100/80 text-teal-700 flex items-center justify-center text-base mb-1 group-active:scale-95 transition">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </div>
+                <span class="text-[10px] text-gray-700 font-medium">Statistik</span>
+            </a>
+        </div>
+
+        <hr class="border-teal-50 my-1">
+
+        <!-- Section 2: Form Input Pasien & Autosave Draft -->
+        <div id="form-pasien" class="p-4">
+            <div class="flex justify-between items-center mb-3">
+                <h2 id="formTitle" class="text-sm font-bold text-gray-800 flex items-center gap-2">
+                    <i class="fa-solid fa-notes-medical text-teal-600"></i> Form Assessment Pasien
+                </h2>
+                <!-- Indicator Autosave -->
+                <span id="autosaveStatus" class="text-[10px] text-teal-600 font-medium flex items-center gap-1">
+                    <i class="fa-solid fa-cloud-arrow-up text-teal-600"></i> Autosave Siap
+                </span>
+            </div>
+            
+            <form id="patientForm" class="space-y-3 bg-teal-50/40 p-4 rounded-xl border border-teal-100">
+                <input type="hidden" id="editPatientId" value="">
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">Bulan & Tahun Kunjungan</label>
+                    <input type="month" id="bulanInput" required class="w-full text-xs p-2.5 border border-teal-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">Nama Pasien</label>
+                    <input type="text" id="namaInput" placeholder="Masukkan nama lengkap pasien" required class="w-full text-xs p-2.5 border border-teal-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">
+                        Nomor HP / WhatsApp Pasien <span class="text-teal-600">*</span>
+                    </label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-teal-600 text-xs">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </span>
+                        <input type="tel" id="phoneInput" placeholder="0812xxxxxxx" required class="w-full text-xs pl-8 pr-2.5 py-2.5 border border-teal-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">Kecamatan (Batam)</label>
+                    <select id="kecamatanInput" required class="w-full text-xs p-2.5 border border-teal-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white">
+                        <option value="">-- Pilih Kecamatan --</option>
+                        <option value="Batam Kota">Batam Kota</option>
+                        <option value="Batu Aji">Batu Aji</option>
+                        <option value="Batu Ampar">Batu Ampar</option>
+                        <option value="Belakang Padang">Belakang Padang</option>
+                        <option value="Bengkong">Bengkong</option>
+                        <option value="Bulang">Bulang</option>
+                        <option value="Galang">Galang</option>
+                        <option value="Lubuk Baja">Lubuk Baja</option>
+                        <option value="Nongsa">Nongsa</option>
+                        <option value="Sagulung">Sagulung</option>
+                        <option value="Sei Beduk">Sei Beduk</option>
+                        <option value="Sekupang">Sekupang</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">Alamat Lengkap</label>
+                    <textarea id="alamatInput" rows="2" placeholder="Nama jalan, perumahan, RT/RW..." required class="w-full text-xs p-2.5 border border-teal-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">Assessment / Keluhan Fisioterapi</label>
+                    <textarea id="assessmentInput" rows="3" placeholder="Contoh: Pasien LBP (Low Back Pain), latihan ROM..." required class="w-full text-xs p-2.5 border border-teal-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:outline-none bg-white"></textarea>
+                </div>
+
+                <div class="flex gap-2">
+                    <button type="submit" id="btnSubmitForm" class="flex-1 bg-teal-600 text-white text-xs font-semibold py-3 rounded-lg hover:bg-teal-700 transition shadow-sm cursor-pointer">
+                        Simpan Data Pasien
+                    </button>
+                    <button type="button" id="btnCancelEdit" class="hidden bg-gray-300 text-gray-700 text-xs font-semibold px-4 py-3 rounded-lg hover:bg-gray-400 transition cursor-pointer">
+                        Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Section Backup & Restore Data -->
+        <div id="backup-restore" class="p-4 bg-teal-50/50 border-y border-teal-100">
+            <h2 class="text-sm font-bold text-gray-800 mb-1 flex items-center gap-2">
+                <i class="fa-solid fa-floppy-disk text-teal-600"></i> Backup & Restore Data Hape
+            </h2>
+            <p class="text-[11px] text-gray-500 mb-3">
+                Simpan cadangan data ke penyimpanan HP Anda agar data medis aman dari kehilangan.
+            </p>
+
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="exportDataToPhone()" class="bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-semibold p-2.5 rounded-lg flex items-center justify-center gap-1.5 transition cursor-pointer shadow-sm">
+                    <i class="fa-solid fa-download"></i> Download Backup
+                </button>
+
+                <label for="importFileInput" class="bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold p-2.5 rounded-lg flex items-center justify-center gap-1.5 transition cursor-pointer shadow-sm text-center">
+                    <i class="fa-solid fa-upload"></i> Restore Data
+                </label>
+                <input type="file" id="importFileInput" accept=".json" class="hidden" onchange="importDataFromPhone(event)">
+            </div>
+        </div>
+
+        <!-- Section 3: Data Pasien & Kontak WA -->
+        <div id="riwayat-pasien" class="p-4 bg-teal-50/20 border-b border-teal-100">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="text-sm font-bold text-gray-800 flex items-center gap-2">
+                    <i class="fa-solid fa-users text-teal-600"></i> Data Pasien Terdaftar
+                </h2>
+                <span id="totalPasienBadge" class="bg-teal-100 text-teal-800 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    0 Pasien
+                </span>
+            </div>
+
+            <div class="bg-white p-3 rounded-xl border border-teal-100 mb-3 space-y-2">
+                <div class="flex items-center gap-2">
+                    <label class="text-[11px] font-medium text-gray-500 w-24">Pilih Bulan:</label>
+                    <input type="month" id="filterBulan" class="w-full text-xs p-2 border border-teal-200 rounded-lg focus:outline-none focus:border-teal-500">
+                </div>
+                <div class="flex items-center gap-2">
+                    <label class="text-[11px] font-medium text-gray-500 w-24">Kecamatan:</label>
+                    <select id="filterKecamatan" class="w-full text-xs p-2 border border-teal-200 rounded-lg focus:outline-none focus:border-teal-500">
+                        <option value="ALL">Semua Kecamatan</option>
+                        <option value="Batam Kota">Batam Kota</option>
+                        <option value="Batu Aji">Batu Aji</option>
+                        <option value="Batu Ampar">Batu Ampar</option>
+                        <option value="Belakang Padang">Belakang Padang</option>
+                        <option value="Bengkong">Bengkong</option>
+                        <option value="Bulang">Bulang</option>
+                        <option value="Galang">Galang</option>
+                        <option value="Lubuk Baja">Lubuk Baja</option>
+                        <option value="Nongsa">Nongsa</option>
+                        <option value="Sagulung">Sagulung</option>
+                        <option value="Sei Beduk">Sei Beduk</option>
+                        <option value="Sekupang">Sekupang</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="patientListContainer" class="space-y-3"></div>
+        </div>
+
+        <!-- Section 4: Grafik Visit Kecamatan -->
+        <div id="grafik-section" class="p-4">
+            <h2 class="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-chart-pie text-teal-600"></i> Statistik Kunjungan Kecamatan
+            </h2>
+            <div class="bg-white p-4 rounded-xl border border-teal-100 shadow-sm">
+                <div class="w-full max-w-[240px] mx-auto">
+                    <canvas id="kecamatanChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation Bar - Medis -->
+        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-teal-100 max-w-[430px] mx-auto flex justify-around py-2 z-20">
+            <a href="#" class="flex flex-col items-center text-teal-600">
+                <i class="fa-solid fa-house text-lg"></i>
+                <span class="text-[10px] mt-0.5">Beranda</span>
+            </a>
+            <a href="#form-pasien" class="flex flex-col items-center text-gray-400 hover:text-teal-600">
+                <i class="fa-solid fa-file-pen text-lg"></i>
+                <span class="text-[10px] mt-0.5">Form</span>
+            </a>
+            <a href="#riwayat-pasien" class="flex flex-col items-center text-gray-400 hover:text-teal-600">
+                <i class="fa-solid fa-users text-lg"></i>
+                <span class="text-[10px] mt-0.5">Pasien</span>
+            </a>
+            <a href="#grafik-section" class="flex flex-col items-center text-gray-400 hover:text-teal-600">
+                <i class="fa-solid fa-chart-pie text-lg"></i>
+                <span class="text-[10px] mt-0.5">Statistik</span>
+            </a>
+        </div>
+
+    </div>
+
+    <!-- SCRIPT JAVASCRIPT -->
+    <script>
+        let patientsDatabase = JSON.parse(localStorage.getItem('zh_patients')) || [];
+        let chart = null;
+
+        const formFields = ['bulanInput', 'namaInput', 'phoneInput', 'kecamatanInput', 'alamatInput', 'assessmentInput'];
+
+        function saveDraft() {
+            if (document.getElementById('editPatientId').value) return;
+
+            const draftData = {};
+            formFields.forEach(id => {
+                draftData[id] = document.getElementById(id).value;
+            });
+            localStorage.setItem('zh_patient_draft', JSON.stringify(draftData));
+            
+            const statusEl = document.getElementById('autosaveStatus');
+            statusEl.innerHTML = `<i class="fa-solid fa-check text-teal-600"></i> Draft Tersimpan`;
+            setTimeout(() => {
+                statusEl.innerHTML = `<i class="fa-solid fa-cloud-arrow-up text-teal-600"></i> Autosave Siap`;
+            }, 1500);
+        }
+
+        function loadDraft() {
+            const savedDraft = localStorage.getItem('zh_patient_draft');
+            if (savedDraft && !document.getElementById('editPatientId').value) {
+                const draftData = JSON.parse(savedDraft);
+                formFields.forEach(id => {
+                    if (draftData[id]) {
+                        document.getElementById(id).value = draftData[id];
+                    }
+                });
+            }
+        }
+
+        function clearDraft() {
+            localStorage.removeItem('zh_patient_draft');
+        }
+
+        formFields.forEach(id => {
+            const el = document.getElementById(id);
+            el.addEventListener('input', saveDraft);
+            el.addEventListener('change', saveDraft);
+        });
+
+        function exportDataToPhone() {
+            if (patientsDatabase.length === 0) {
+                alert("Tidak ada data pasien untuk di-backup!");
+                return;
+            }
+
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(patientsDatabase, null, 2));
+            const downloadAnchor = document.createElement('a');
+            
+            const dateObj = new Date();
+            const dateStr = dateObj.toISOString().slice(0, 10);
+            
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `Backup_Zariahomecare_${dateStr}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+
+            alert("Backup data berhasil diunduh ke penyimpanan ponsel Anda!");
+        }
+
+        function importDataFromPhone(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (Array.isArray(importedData)) {
+                        if (confirm(`Apakah Anda yakin ingin memulihkan ${importedData.length} data pasien? Data lama akan diperbarui.`)) {
+                            patientsDatabase = importedData;
+                            localStorage.setItem('zh_patients', JSON.stringify(patientsDatabase));
+                            renderPatients();
+                            alert("Data pasien berhasil dipulihkan!");
+                        }
+                    } else {
+                        alert("Format file tidak valid.");
+                    }
+                } catch (err) {
+                    alert("Gagal membaca file backup. Pastikan file berformat .json yang sesuai.");
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function renderPatients() {
+            let month = document.getElementById('filterBulan').value;
+            let kec = document.getElementById('filterKecamatan').value;
+            let container = document.getElementById('patientListContainer');
+
+            let filtered = patientsDatabase.filter(function(p) {
+                return (!month || p.bulan === month) && (kec === 'ALL' || p.kecamatan === kec);
+            });
+
+            document.getElementById('totalPasienBadge').innerText = filtered.length + " Pasien";
+            container.innerHTML = '';
+
+            if(filtered.length === 0) {
+                container.innerHTML = '<p class="text-xs text-gray-400 text-center py-6 bg-white rounded-xl border border-dashed border-teal-200">Belum ada data pasien terdaftar.</p>';
+                updateChart();
+                return;
+            }
+
+            filtered.forEach(function(p) {
+                let card = document.createElement('div');
+                card.className = "bg-white p-3.5 rounded-xl border border-teal-100 shadow-sm space-y-2";
+                
+                let waNumber = p.phone ? p.phone.replace(/[^0-9]/g, '') : '';
+                if(waNumber.startsWith('0')) waNumber = '62' + waNumber.slice(1);
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <strong class="text-xs text-gray-800">${p.nama}</strong>
+                            <div class="text-[10px] text-teal-600 font-semibold">${p.kecamatan}</div>
+                        </div>
+                        <span class="text-[10px] text-gray-400">${p.bulan}</span>
+                    </div>
+                    
+                    ${p.phone ? `
+                        <div class="text-[11px] text-gray-600 flex items-center justify-between">
+                            <span><i class="fa-solid fa-phone text-xs text-gray-400 mr-1"></i> ${p.phone}</span>
+                            <a href="https://wa.me/${waNumber}" target="_blank" class="bg-teal-50 text-teal-700 font-bold px-2 py-0.5 rounded text-[10px] flex items-center gap-1 hover:bg-teal-100">
+                                <i class="fa-brands fa-whatsapp text-emerald-600"></i> Chat WA
+                            </a>
+                        </div>
+                    ` : ''}
+
+                    <div class="text-[11px] text-gray-600"><strong class="text-gray-700">Alamat:</strong> ${p.alamat}</div>
+                    <div class="text-[11px] bg-teal-50/50 p-2 rounded-lg border border-teal-100"><strong class="text-teal-700">Assessment:</strong> ${p.assessment}</div>
+                    
+                    <div class="flex justify-end gap-2 pt-1 border-t border-gray-100">
+                        <button onclick="editPatient(${p.id})" class="text-[10px] bg-teal-50 text-teal-700 font-semibold px-2.5 py-1 rounded hover:bg-teal-100 transition flex items-center gap-1 cursor-pointer">
+                            <i class="fa-solid fa-pen-to-square"></i> Edit
+                        </button>
+                        <button onclick="deletePatient(${p.id})" class="text-[10px] bg-rose-50 text-rose-600 font-semibold px-2.5 py-1 rounded hover:bg-rose-100 transition flex items-center gap-1 cursor-pointer">
+                            <i class="fa-solid fa-trash"></i> Hapus
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            updateChart();
+        }
+
+        document.getElementById('patientForm').onsubmit = function(e) {
+            e.preventDefault();
+            
+            let editId = document.getElementById('editPatientId').value;
+
+            if (editId) {
+                let index = patientsDatabase.findIndex(p => p.id == editId);
+                if (index !== -1) {
+                    patientsDatabase[index] = {
+                        id: Number(editId),
+                        bulan: document.getElementById('bulanInput').value,
+                        nama: document.getElementById('namaInput').value,
+                        phone: document.getElementById('phoneInput').value,
+                        kecamatan: document.getElementById('kecamatanInput').value,
+                        alamat: document.getElementById('alamatInput').value,
+                        assessment: document.getElementById('assessmentInput').value
+                    };
+                    alert("Data pasien berhasil diperbarui!");
+                }
+            } else {
+                let newP = {
+                    id: Date.now(),
+                    bulan: document.getElementById('bulanInput').value,
+                    nama: document.getElementById('namaInput').value,
+                    phone: document.getElementById('phoneInput').value,
+                    kecamatan: document.getElementById('kecamatanInput').value,
+                    alamat: document.getElementById('alamatInput').value,
+                    assessment: document.getElementById('assessmentInput').value
+                };
+                patientsDatabase.unshift(newP);
+                alert("Data pasien " + newP.nama + " berhasil disimpan!");
+            }
+
+            localStorage.setItem('zh_patients', JSON.stringify(patientsDatabase));
+            resetFormState();
+            renderPatients();
+        };
+
+        function editPatient(id) {
+            let patient = patientsDatabase.find(p => p.id === id);
+            if (!patient) return;
+
+            document.getElementById('editPatientId').value = patient.id;
+            document.getElementById('bulanInput').value = patient.bulan;
+            document.getElementById('namaInput').value = patient.nama;
+            document.getElementById('phoneInput').value = patient.phone;
+            document.getElementById('kecamatanInput').value = patient.kecamatan;
+            document.getElementById('alamatInput').value = patient.alamat;
+            document.getElementById('assessmentInput').value = patient.assessment;
+
+            document.getElementById('btnSubmitForm').innerText = "Perbarui Data Pasien";
+            document.getElementById('btnCancelEdit').classList.remove('hidden');
+            
+            document.getElementById('form-pasien').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.getElementById('btnCancelEdit').onclick = resetFormState;
+
+        function resetFormState() {
+            document.getElementById('editPatientId').value = '';
+            document.getElementById('patientForm').reset();
+            document.getElementById('btnSubmitForm').innerText = "Simpan Data Pasien";
+            document.getElementById('btnCancelEdit').classList.add('hidden');
+            
+            let curMonth = new Date().toISOString().slice(0,7);
+            document.getElementById('bulanInput').value = curMonth;
+            clearDraft();
+        }
+
+        function deletePatient(id) {
+            if (confirm("Apakah Anda yakin ingin menghapus data pasien ini?")) {
+                patientsDatabase = patientsDatabase.filter(p => p.id !== id);
+                localStorage.setItem('zh_patients', JSON.stringify(patientsDatabase));
+                renderPatients();
+            }
+        }
+
+        function updateChart() {
+            let counts = {};
+            patientsDatabase.forEach(p => {
+                counts[p.kecamatan] = (counts[p.kecamatan] || 0) + 1;
+            });
+
+            let ctx = document.getElementById('kecamatanChart').getContext('2d');
+            
+            if(chart) chart.destroy();
+
+            const colorfulPalette = [
+                '#0d9488', '#0284c7', '#2563eb', '#7c3aed', 
+                '#db2777', '#e11d48', '#ea580c', '#d97706', 
+                '#65a30d', '#16a34a', '#059669', '#0891b2'
+            ];
+
+            chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(counts).length > 0 ? Object.keys(counts) : ['Belum ada data'],
+                    datasets: [{
+                        data: Object.values(counts).length > 0 ? Object.values(counts) : [1],
+                        backgroundColor: Object.values(counts).length > 0 ? colorfulPalette : ['#e5e7eb']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        document.getElementById('filterBulan').onchange = renderPatients;
+        document.getElementById('filterKecamatan').onchange = renderPatients;
+
+        let curMonth = new Date().toISOString().slice(0,7);
+        document.getElementById('bulanInput').value = curMonth;
+        document.getElementById('filterBulan').value = curMonth;
+        
+        loadDraft();
+        renderPatients();
+    </script>
+</body>
+</html>
